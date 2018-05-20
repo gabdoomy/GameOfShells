@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<style>
+
+  #title{
+    padding-top: 20px;
+  }
+
+  #instructions {
+    font-size: 16px;
+    padding-top: 20px;
+  }
+
+  .table {
+      position: absolute;
+      left: 0%;
+      top: 20%;
+      width:100%;
+  }
+
+  ul {
+      margin:0 auto;
+      padding:0;
+      list-style-type:none;
+      width:380px;
+  }
+
+  ul > li {
+      display:inline-block;
+      margin:10px;
+      width:100px;
+      height:100px;
+      background-color:#abc;
+      position:relative;
+
+  }
+
+  ul > li.ball:after {
+      content:"";
+      position: absolute;
+      display:block;
+      background-color:#fff;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+  }
+
+</style>
+
+</head>
+<body>
+  <h1 id="title" class="text-center">Game of Shells</h1>
+  <div id="instructions" class="text-center text-primary">Watch the ball dissapear</div>
+  <div class="table">
+    <ul>
+        <li id="first"></li>
+        <li id="second"></li>
+        <li id="third"></li>
+    </ul>
+  </div>
+  <script type="text/javascript" charset="utf-8">
+  var shell = Math.floor(Math.random()*3)+1;
+  var numberShuffles = 10;
+  var difficulty = 700;
+  $(document).ready(function(){
+     
+          var cup = $(".table li:nth-child("+shell+")");
+          setTimeout(function(){
+             $(cup).addClass('ball');
+             setTimeout(function(){
+                $(cup).removeClass();
+
+                for(shuffle=0; shuffle<=numberShuffles; shuffle++){
+                   $( ".table ul li" ).each(function( index ) {
+                     animateDiv(this);
+                  });
+                }
+
+                setTimeout(function(){
+                  $('#instructions').text("Select shell");
+                  var game = new ShellGame();
+                  $( ".table ul li" ).each(function( index ) {
+                    $( this ).click(function() {
+                      game.play(index);
+                    });
+                  });
+                }, (numberShuffles+1)*difficulty)
+             }, 500);
+         }, 300);
+      });
+
+  function ShellGame(){
+    this.play = function(shellNum){
+      $('#instructions').removeClass();
+
+      if(shellNum+1 == shell) {
+        result = 'You Won!';
+        $('#instructions').addClass("text-center text-success");
+      }
+      else {
+        result = 'You Lost!';
+        $('#instructions').addClass("text-center text-danger");
+      }
+
+      $('#instructions').text(result);
+    }
+  }
+ 
+  // random shuffle from https://codepen.io/cooljockey/pen/uyeHz
+  function makeNewPosition(){
+      
+      var h = $(window).height()/2;
+      var w = $(window).width()/2;
+      
+      var nh = Math.floor(Math.random() * h);
+      var nw = Math.floor((Math.random()-0.5) * w);
+      
+      return [nh,nw];    
+      
+  }
+
+  function animateDiv(elem){
+      var newq = makeNewPosition();
+      $(elem).animate({ top: newq[0], left: newq[1] }, difficulty);
+  };
+
+  </script>
+</body>
+</html>
